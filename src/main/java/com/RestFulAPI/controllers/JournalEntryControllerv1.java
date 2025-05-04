@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,9 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.RestFulAPI.entity.JournalEntry;
 
+@Profile("!ignoreClass")
 @RestController
 @RequestMapping("/journal")
-public class JournalEntryController {
+public class JournalEntryControllerv1 {
 	
 	private Map<Long, JournalEntry> journalEntries = new HashMap<>();
 
@@ -29,11 +31,11 @@ public class JournalEntryController {
 
 	}
 
-	@PostMapping // variable daaal do me data dalo ya teble me
-	public boolean createEntry(@RequestBody JournalEntry journalEntry) {
-		journalEntries.put(journalEntry.getId(), journalEntry);
-		return true;
-	}
+//	@PostMapping // variable daaal do me data dalo ya teble me
+//	public boolean createEntry(@RequestBody JournalEntry journalEntry) {
+//		journalEntries.put(journalEntry.getId(), journalEntry);
+//		return true;
+//	}
 
 	@GetMapping("id/{myId}")
 	public JournalEntry getJournalEntrybyId(@PathVariable Long myId) {

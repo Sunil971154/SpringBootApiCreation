@@ -1,22 +1,45 @@
 package com.RestFulAPI.entity;
 
 
+
+
+import java.time.LocalDateTime;
+
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 //yah ek Pojo class  Hai
+
+@Document(collection = "jetable")
 public class JournalEntry {
 
-	private long id;
+	private ObjectId id;
 
 	private String title;
 	private String content;
-	public long getId() {
-		return id;
+	private LocalDateTime localDateTime;
+	
+	
+	public LocalDateTime getLocalDateTime() {
+		return localDateTime;
 	}
-	public void setId(long id) {
-		this.id = id;
+
+	public void setLocalDateTime(LocalDateTime localDateTime) {
+		this.localDateTime = localDateTime;
 	}
+
 	public String getTitle() {
 		return title;
 	}
+	
+	public ObjectId getId() {
+		return id;
+	}
+
+	public void setId(ObjectId id) {
+		this.id = id;
+	}
+
 	public void setTitle(String title) {
 		this.title = title;
 	}
