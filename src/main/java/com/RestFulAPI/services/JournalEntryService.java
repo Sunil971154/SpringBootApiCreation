@@ -27,7 +27,7 @@ public class JournalEntryService {
 
 		JournalEntry saved = jeRepo.save(journalEntry); //journal entry save ho rahi hai 
 													   // agr yaha exception aagai iska matlab je save ho jayegai but user me add nahi hogi 
-		
+													  // user me un je ki entry nahi aayegai to yah inconsistensy aajegai 	
 		user.getJournalEntries().add(saved);
 
 		userService.saveUEntry(user);
