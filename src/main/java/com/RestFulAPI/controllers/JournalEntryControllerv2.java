@@ -19,10 +19,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.RestFulAPI.entity.JournalEntry;
+import com.RestFulAPI.entity.User;
 import com.RestFulAPI.services.JournalEntryService;
+import com.RestFulAPI.services.UserService;
 
 @RestController
 @RequestMapping("/journal")
@@ -30,15 +33,18 @@ public class JournalEntryControllerv2 {
 
 	@Autowired
 	private JournalEntryService jEntryService;
+	
+	@Autowired
+	private  UserService userService;
 
 	//pOST CREATE
-	@PostMapping // variable daaal do me data dalo ya teble me
-	public ResponseEntity<?> createEntry(@RequestBody JournalEntry myEntry) {
+	@PostMapping("{userName}")  // variable daaal do me data dalo ya teble me
+	public ResponseEntity<?> createEntry(@RequestBody JournalEntry myEntry, @PathVariable String userName ) {
 
 		try {
-
+			User user = userService.findByUserName(userName);
 			myEntry.setLocalDateTime(LocalDateTime.now());
-			jEntryService.saveJEntry(myEntry);
+			jEntryService.saveJEntry(myEntry,userName);
 			return new ResponseEntity<>(myEntry, HttpStatus.CREATED);
 
 		} catch (Exception e) {
@@ -47,12 +53,17 @@ public class JournalEntryControllerv2 {
 	}
 
 	//gET alL
-	@GetMapping // variable ya table se data lawo or dikhwo
-	public ResponseEntity<?> getSimpalAll() {
-		List<JournalEntry> allJe = jEntryService.getAllJe();
+	@GetMapping("{userName}")  // variable ya table se data lawo or dikhwo	
+	public ResponseEntity<?> getAllJournalEntriesOfUser(@PathVariable String userName) {	
+		User user = userService.findByUserName(userName); // database se user isme aagya
+		
+		//List<JournalEntry> allJe = jEntryService.getAllJe();
+		List<JournalEntry> allJe = user.getJournalEntries();
 		if (allJe != null && !allJe.isEmpty()) {
+			System.out.println("enter in geting all ");
 			return new ResponseEntity<>(allJe, HttpStatus.OK);
 		}
+		System.out.println("Khali hai ");
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
@@ -70,17 +81,20 @@ public class JournalEntryControllerv2 {
 
 	
 	
-	@DeleteMapping("id/{myId}")
-	public ResponseEntity<?> deljournalEntry(@PathVariable ObjectId myId) {
-		jEntryService.deletById(myId);
+	@DeleteMapping("id/{userName}/{myId}")
+	public ResponseEntity<?> deljournalEntry(@PathVariable ObjectId myId, @PathVariable String userName ) {
+		jEntryService.deletById(myId, userName);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 	
 	
-	@PutMapping("id/{id}")
-	public ResponseEntity<?> updatJEById(@PathVariable ObjectId id, @RequestBody JournalEntry updatedEntry) {
-		JournalEntry oldEntry = jEntryService.findByID(id).orElse(null);
+	@PutMapping("id/{userName}/{myid}")
+	public ResponseEntity<?> updatJEById(
+			@PathVariable ObjectId myid,
+			@RequestBody JournalEntry updatedEntry,
+			@PathVariable String userName) {
+		JournalEntry oldEntry = jEntryService.findByID(myid).orElse(null);
 
 		if (oldEntry != null) {
 
