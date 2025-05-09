@@ -3,6 +3,7 @@ package com.RestFulAPI.services;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 import javax.management.RuntimeErrorException;
 
@@ -25,20 +26,22 @@ public class JournalEntryService {
 	private UserService userService;
 
 	@Transactional
-	public void saveJEntry(JournalEntry journalEntry, String Username) {
+	public void saveJEntry(JournalEntry journalEntry, String userName) {
 
 		try {
 
-			User user = userService.findByUserName(Username);
+			User user = userService.findByUserName(userName);
 
 			JournalEntry saved = jeRepo.save(journalEntry); // journal entry save ho rahi hai
 															// agr yaha exception aagai iska matlab je save ho jayegai
 															// but user me add nahi hogi
 															// user me un je ki entry nahi aayegai to yah inconsistensy
 															// aajegai
-			user.getJournalEntries().add(saved);
+			user.getJournalEntries().add(saved);  
 
 			userService.saveUEntry(user);
+			
+			
 
 		} catch (Exception e) {
 				System.out.println(e);

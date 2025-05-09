@@ -10,7 +10,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @EnableTransactionManagement
-public class TransactionConfig {
+public class TransactionConfig 
+{
 	
 	@Bean
 	public PlatformTransactionManager add (MongoDatabaseFactory dbFactory) {

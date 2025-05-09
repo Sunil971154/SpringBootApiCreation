@@ -20,7 +20,7 @@ public class User {
 	@Id
 	private ObjectId id; // isko string bhi le sakte hai spring data mongo db hamare liye convert kardega
 
-	@NonNull   // e lombok ki anotation hai 
+	@NonNull // e lombok ki anotation hai
 	@Indexed(unique = true)
 	private String userName;
 	@NonNull
@@ -29,5 +29,7 @@ public class User {
 	@DBRef // je ka referance create kar rahe user k ander
 	private List<JournalEntry> journalEntries = new ArrayList(); // jaise hi ek user initioalise hoga user null nahi
 																	// hoga khali hoga
+	@NonNull
+	private List<String> roles;
 
 }
