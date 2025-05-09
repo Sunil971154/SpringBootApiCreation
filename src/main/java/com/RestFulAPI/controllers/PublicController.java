@@ -11,24 +11,26 @@ import com.RestFulAPI.entity.User;
 import com.RestFulAPI.services.UserService;
 
 @RestController
-@RequestMapping("/public ")
+@RequestMapping("/public")
 public class PublicController {
 
 	@Autowired
 	private UserService userService;
 
-	@GetMapping
+	@GetMapping("/health-check")
 	public String healthCheck() {
 		return "Ok";
 
 	}
+		
 
 	// 2.0 Create e public hai isko koi bhi call kar sakta hai
 	@PostMapping("/create-user")
-	public void createUser(@RequestBody User user) {
-
-		userService.saveUEntry(user);
-
+	public Boolean createUser(@RequestBody User user) {
+		   userService.saveUEntry(user);
+		
+		return true ;
+				
 	};
 
 }

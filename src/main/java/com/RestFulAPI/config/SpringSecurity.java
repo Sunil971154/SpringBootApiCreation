@@ -43,6 +43,13 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
 				// 🚫 Session stateless किया गया — हर request में authentication की ज़रूरत होगी
 				// (JWT या Basic Auth)
 				.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		
+		
+		/*
+		http
+		.csrf().disable()
+		.authorizeRequests()
+		.anyRequest().permitAll(); // 🔓 sab endpoints public*/
 	}
 
 	@Override

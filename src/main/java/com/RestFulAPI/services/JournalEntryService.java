@@ -31,20 +31,16 @@ public class JournalEntryService {
 		try {
 
 			User user = userService.findByUserName(userName);
-
 			JournalEntry saved = jeRepo.save(journalEntry); // journal entry save ho rahi hai
 															// agr yaha exception aagai iska matlab je save ho jayegai
 															// but user me add nahi hogi
 															// user me un je ki entry nahi aayegai to yah inconsistensy
 															// aajegai
-			user.getJournalEntries().add(saved);  
-
-			userService.saveUEntry(user);
-			
-			
+			user.getJournalEntries().add(saved);
+			userService.saveUser(user);
 
 		} catch (Exception e) {
-				System.out.println(e);
+			System.out.println(e);
 			// Throw a RuntimeException so that Spring can trigger rollback
 			throw new RuntimeException("An error occurred while saving the entry", e);
 		}
@@ -62,16 +58,33 @@ public class JournalEntryService {
 	}
 
 	public Optional<JournalEntry> findByID(ObjectId id) {
-
 		return jeRepo.findById(id);
-
 	}
 
-	public void deletById(ObjectId id, String userName) {
-		User user = userService.findByUserName(userName);
-		user.getJournalEntries().removeIf(x -> x.getId().equals(id));
-		userService.saveUEntry(user);
-		jeRepo.deleteById(id);
+	@Transactional
+	public boolean deletById(ObjectId id, String userName) {
+
+		boolean removed = false;
+		try {
+
+			User user = userService.findByUserName(userName);
+			removed = user.getJournalEntries().removeIf(x -> x.getId().equals(id));
+
+			if (removed) {
+				userService.saveUser(user);
+				jeRepo.deleteById(id);
+			}
+
+		} catch (Exception e) {
+			System.out.println(e);
+			throw new RuntimeException("An error occurrd While deleting the entry . ", e);
+		}
+		return removed;
+	}
+
+	public List<JournalEntry> findByUserName(String userName) {
+
+		return null;
 
 	}
 

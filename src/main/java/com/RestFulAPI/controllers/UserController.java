@@ -46,7 +46,6 @@ public class UserController {
 		User userInDb = userService.findByUserName(userName);
 
 		if (userInDb != null) {
-
 			userInDb.setUserName(user.getUserName());
 			userInDb.setPassword(user.getPassword());
 			userService.saveUEntry(userInDb);
