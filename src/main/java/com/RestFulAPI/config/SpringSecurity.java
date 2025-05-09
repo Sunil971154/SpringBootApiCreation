@@ -31,6 +31,7 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
 				// 🔐 "/journal/**" वाला हर URL authenticated (login किया हुआ) user ही access कर
 				// सकता है
 				.antMatchers("/journal/**", "/user/**").authenticated()
+				.antMatchers("/admin/**").hasRole("ADMIN")
 
 				// 🌍 बाकी सभी URL (जैसे "/", "/home", etc.) को बिना login के access किया जा
 				// सकता है

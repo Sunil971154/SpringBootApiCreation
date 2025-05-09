@@ -120,8 +120,7 @@ public class JournalEntryControllerv2 {
 				jEntryService.saveJEntry(oldEntry);
 				return new ResponseEntity<>(oldEntry,HttpStatus.OK);
 			}
-		}
-		
+		}		
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
 	}
