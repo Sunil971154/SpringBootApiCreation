@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.bson.types.ObjectId;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,17 +18,35 @@ import com.RestFulAPI.entity.User;
 import com.RestFulAPI.repo.JeRepo;
 import com.RestFulAPI.repo.UserRepo;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Component
+@Slf4j
 public class UserService {
+	
 	@Autowired
 	private UserRepo userRepo;
 
 	private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-	public void saveUEntry(User user) {
-		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		user.setRoles(Arrays.asList("USER"));
-		userRepo.save(user);
+	// private static final  org.slf4j.Logger logger = LoggerFactory.getLogger(UserService.class);
+	
+	public boolean saveUEntry(User user) {
+		try {			
+			user.setPassword(passwordEncoder.encode(user.getPassword()));
+			user.setRoles(Arrays.asList("USER"));
+			userRepo.save(user);
+			return true;
+			
+		} catch (Exception e) 
+		{
+			log.error("error ocoured {} ");
+			log.warn("hhahaahahahhhaahah");
+			log.info("hhahaahahahhhaahah");
+			log.debug("hhahaahahahhhaahah");
+			log.trace("hhahaahahahhhaahah");
+			return false;
+		}		
 
 	}
 	
