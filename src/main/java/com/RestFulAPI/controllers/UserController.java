@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.RestFulAPI.entity.User;
 import com.RestFulAPI.repo.UserRepo;
+import com.RestFulAPI.response.WeatherResponse;
 import com.RestFulAPI.services.UserService;
+import com.RestFulAPI.services.WeatherService;
 
 @RestController
 @RequestMapping("/user")
@@ -28,6 +30,9 @@ public class UserController {
 	private UserService userService;
 	@Autowired
 	private UserRepo userRepo;
+	@Autowired
+	private  WeatherService weatherService;
+	
 
 	// 1.0 Read
 	/*
@@ -62,5 +67,26 @@ public class UserController {
 		userRepo.deleteByuserName(authentication.getName());
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
+	
+	
+	
+	@GetMapping
+	public ResponseEntity<?> greeting() {
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		WeatherResponse  weatherResponse = weatherService.getWeather("Mumbai");
+		
+		String greeting = "";
+		
+		if(weatherResponse!=null) {
+			
+			greeting =" , Weather feels like  " + weatherResponse.getCurrent().getFeelslike();
+		}
+		return new ResponseEntity<>("Hi " + authentication.getName()+ greeting , HttpStatus.OK);
+	} 
+	
+	
+	
+	
 
 }
