@@ -2,7 +2,9 @@ package com.RestFulAPI.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.mongodb.core.aggregation.BooleanOperators.And;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -11,14 +13,22 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import JwtFilter.JwtFilter;
 
 @EnableWebSecurity
+
 public class SpringSecurity extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private UserDetailsService userDetailsService;
+	
+	@Autowired
+	@Lazy
+    private JwtFilter jwtFilter;
 
-	@Override
+	@Override 
 	protected void configure(HttpSecurity http) throws Exception {
 
 		http
@@ -30,27 +40,14 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
 				.authorizeRequests()
 				// 🔐 "/journal/**" वाला हर URL authenticated (login किया हुआ) user ही access कर
 				// सकता है
-				.antMatchers("/journal/**", "/user/**").authenticated()
-				.antMatchers("/admin/**").hasRole("ADMIN")
+				.antMatchers("/journal/**", "/user/**").authenticated().antMatchers("/admin/**").hasRole("ADMIN")
 
 				// 🌍 बाकी सभी URL (जैसे "/", "/home", etc.) को बिना login के access किया जा
 				// सकता है
-				.anyRequest().permitAll()
-
-				// 🔑 Basic Authentication enable किया गया (Browser popup के ज़रिए
-				// username/password मांगेगा)
-				.and().httpBasic()
-
-				// 🚫 Session stateless किया गया — हर request में authentication की ज़रूरत होगी
-				// (JWT या Basic Auth)
-				.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		
-		
-		/*
-		http
-		.csrf().disable()
-		.authorizeRequests()
-		.anyRequest().permitAll(); // 🔓 sab endpoints public*/
+				.anyRequest().permitAll();
+				http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().csrf().disable();
+				http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+	
 	}
 
 	@Override
@@ -64,5 +61,23 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
 		return new BCryptPasswordEncoder();
 
 	}
+	
+	
+	@Bean
+	public AuthenticationManager authenticationManagerBean() throws Exception
+	{
+		return super.authenticationManagerBean();
+		
+	}
+	
+
+	@Bean
+    public JwtFilter jwtFilter() {
+        return new JwtFilter();
+    }
+	
+	
+	
+	
 
 }
