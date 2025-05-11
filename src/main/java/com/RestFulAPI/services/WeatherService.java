@@ -14,7 +14,7 @@ import com.RestFulAPI.response.WeatherResponse;
 public class WeatherService {
 
 	
-	private static final String apiKey="8aa2987ddfa6a54af4439ad6d071ae79";
+	private static final String apiKey="";
 	
 	private static final String API="http://api.weatherstack.com/current?access_key=API_KEY&query=CITY";
 	
